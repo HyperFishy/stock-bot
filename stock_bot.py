@@ -1,3 +1,5 @@
+
+
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -15,23 +17,35 @@ headers = {
 
 def send(webhook, message):
     if "PASTE" in webhook:
+        print("Webhook not set")
         return
-    requests.post(webhook, json={"content": message}, timeout=10)
+
+    response = requests.post(
+        webhook,
+        json={"content": message},
+        timeout=10
+    )
+    response.raise_for_status()
 
 
-response = requests.get(URL, headers=headers, timeout=20)
-response.raise_for_status()
+def main():
+    response = requests.get(URL, headers=headers, timeout=20)
+    response.raise_for_status()
 
-soup = BeautifulSoup(response.text, "html.parser")
-text = soup.get_text(" ", strip=True).lower()
+    soup = BeautifulSoup(response.text, "html.parser")
+    text = soup.get_text(" ", strip=True).lower()
 
-now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-if OUT_OF_STOCK_TEXT in text:
-    status = "OUT OF STOCK"
-else:
-    status = "IN STOCK / CHANGED"
-    send(ALERT_WEBHOOK, f"🚨 STOCK ALERT\n{URL}")
+    if OUT_OF_STOCK_TEXT in text:
+        status = "OUT OF STOCK"
+    else:
+        status = "IN STOCK / CHANGED"
+        send(ALERT_WEBHOOK, f"🚨 STOCK ALERT\n{URL}")
 
-# always send status
-send(STATUS_WEBHOOK, f"[{now}] STATUS: {status}")
+    send(STATUS_WEBHOOK, f"[{now}] STATUS: {status}")
+    print(f"[{now}] STATUS: {status}")
+
+
+if __name__ == "__main__":
+    main()
