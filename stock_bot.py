@@ -8,7 +8,7 @@ URL = "https://quack.food/purchase"
 OUT_OF_STOCK_TEXT = "out of stock - check back soon"
 
 ALERT_WEBHOOK = "https://discord.com/api/webhooks/1484438601730363463/mpZza3X0bg7WM9EchDYt_unGClRP7jl8pK9uTIj5HX-EDrI2swLOw5sK4KxO-efiYPQV"
-STATUS_WEBHOOK = "https://discord.com/api/webhooks/1484438696366313614/qtqJmdCC2_dp81V8ItxfdiGHVFYUJ_hcm4gXzI0_Ea3HUZZU8oQEBNw2PZhVnTFBBWuw"
+STATUS_WEBHOOK = "https://discord.com/api/webhooks/1484438605773668374/VO_fd4JzkXtI0OUubDoXIQG8hmYIKgyHOMolMyuz6KL5dDLU5AV29uQsKrSUV3JWbH98"
 
 headers = {
     "User-Agent": "Mozilla/5.0"
