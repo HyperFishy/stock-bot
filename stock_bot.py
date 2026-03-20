@@ -1,34 +1,37 @@
-import time
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
 URL = "https://quack.food/purchase"
-CHECK_EVERY_SECONDS = 10
 OUT_OF_STOCK_TEXT = "out of stock - check back soon"
+
+ALERT_WEBHOOK = https://discord.com/api/webhooks/1484438601730363463/mpZza3X0bg7WM9EchDYt_unGClRP7jl8pK9uTIj5HX-EDrI2swLOw5sK4KxO-efiYPQV
+STATUS_WEBHOOK = https://discord.com/api/webhooks/1484438696366313614/qtqJmdCC2_dp81V8ItxfdiGHVFYUJ_hcm4gXzI0_Ea3HUZZU8oQEBNw2PZhVnTFBBWuw
 
 headers = {
     "User-Agent": "Mozilla/5.0"
 }
 
-print("Starting test... (Press Control + C to stop)\n")
 
-while True:
-    try:
-        response = requests.get(URL, headers=headers, timeout=20)
-        response.raise_for_status()
+def send(webhook, message):
+    if "PASTE" in webhook:
+        return
+    requests.post(webhook, json={"content": message}, timeout=10)
 
-        soup = BeautifulSoup(response.text, "html.parser")
-        text = soup.get_text(" ", strip=True).lower()
 
-        if OUT_OF_STOCK_TEXT in text:
-            status = "OUT OF STOCK"
-        else:
-            status = "IN STOCK / CHANGED"
+response = requests.get(URL, headers=headers, timeout=20)
+response.raise_for_status()
 
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] STATUS: {status}")
+soup = BeautifulSoup(response.text, "html.parser")
+text = soup.get_text(" ", strip=True).lower()
 
-    except Exception as e:
-        print("Error:", e)
+now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    time.sleep(CHECK_EVERY_SECONDS)
+if OUT_OF_STOCK_TEXT in text:
+    status = "OUT OF STOCK"
+else:
+    status = "IN STOCK / CHANGED"
+    send(ALERT_WEBHOOK, f"🚨 STOCK ALERT\n{URL}")
+
+# always send status
+send(STATUS_WEBHOOK, f"[{now}] STATUS: {status}")
